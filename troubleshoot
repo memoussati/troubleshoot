@@ -1,0 +1,73 @@
+#!/bin/bash
+
+clear                                 
+
+echo -n "          "
+echo -e '\E[37;44m'"\033[1mTroubleshoot\033[0m"
+                                        
+echo; echo
+
+##funtie één ipadress ophalen
+function system_info {
+dig  $domain +short
+}
+
+#########################
+
+#foutieve code 
+
+#function nameserver {
+#dig ns 
+
+
+#funtion getIpAdress { 
+#dig $domain +short 
+#}
+###########################
+
+# Get domainname
+domain=$1
+echo -en 'De ingevoerde domeinnaam: '  '\E[47;31m'"\033[1m$domain\033[0m"
+
+echo '      '
+echo '      ' 
+
+## IP-adress achterhalen
+# ipadress= dig $domain +short
+echo -en 'Het gevonden IP-adress: ' '\E[47;31m'"\033[1m$(system_info)\033[0m"
+
+
+echo; echo   #witregel
+
+
+## PTR-record
+function ptr {
+dig -x $(system_info) +short 
+}
+echo 'PTR-record wijst naar : '$(ptr)
+echo
+ 
+
+## Nameservers bepalen
+echo 'De nameservers van '$domain' zijn als volgt:'
+nameserver= dig ns $domain +short
+echo $nameserver
+
+echo; echo #witregel
+
+#mxrecord indien aanwezig
+function mailrecord {
+dig mx $domain +short
+} 
+echo 'De volgende mx-record(s) is/zijn gevonden: '
+
+echo -e $(mailrecord)
+echo; echo
+
+
+
+
+
+
+
+
