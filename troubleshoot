@@ -71,6 +71,11 @@ curl -s 'http://automate.hostnetbv.nl/spam.php' -H 'Origin: http://automate.host
 echo 'Dit is het resultaat uit automate: ' $(automate) 
 
 
+## IP-range check
+function iprange { exec ./iprangecheck $(system_info) | grep "is in"
+} 
+
+echo $(iprange)
 
 
 
