@@ -53,7 +53,7 @@ echo 'De nameservers van '$domain' zijn als volgt:'
 nameserver= dig ns $domain +short
 echo $nameserver
 
-echo; echo #witregel
+
 
 #mxrecord indien aanwezig
 function mailrecord {
@@ -70,10 +70,13 @@ curl -s 'http://automate.hostnetbv.nl/spam.php' -H 'Origin: http://automate.host
 } 
 echo 'Dit is het resultaat uit automate: ' $(automate) 
 
+echo; echo  
 
 ## IP-range check
 function iprange { exec ./iprangecheck $(system_info) | grep "is in"
 } 
+
+echo "Het gevonden IP-adres valt binnen de volgende range: " 
 
 echo $(iprange)
 
