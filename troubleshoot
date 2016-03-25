@@ -7,10 +7,15 @@ echo -e '\E[37;44m'"\033[1mTroubleshoot\033[0m"
                                         
 echo; echo
 
+
+
 ##funtie één ipadress ophalen
 function system_info {
 dig  $domain +short
 }
+
+
+
 
 #########################
 
@@ -25,6 +30,9 @@ dig  $domain +short
 #}
 ###########################
 
+
+
+
 # Get domainname
 domain=$1
 echo -en 'De ingevoerde domeinnaam: '  '\E[47;31m'"\033[1m$domain\033[0m"
@@ -32,12 +40,19 @@ echo -en 'De ingevoerde domeinnaam: '  '\E[47;31m'"\033[1m$domain\033[0m"
 echo '      '
 echo '      ' 
 
+
+
+
+
+
 ## IP-adress achterhalen
-# ipadress= dig $domain +short
+# ipadress= dig $domain +short  ## niet meer benodigd
 echo -en 'Het gevonden IP-adress: ' '\E[47;31m'"\033[1m$(system_info)\033[0m"
 
 
 echo; echo   #witregel
+
+
 
 
 ## PTR-record
@@ -48,10 +63,25 @@ echo 'PTR-record wijst naar : '$(ptr)
 echo
  
 
+
+
 ## Nameservers bepalen
-echo 'De nameservers van '$domain' zijn als volgt:'
-nameserver= dig ns $domain +short
-echo $nameserver
+function nameserver { dig ns $domain +short
+} 
+
+
+if [[ $(nameserver) ]] 
+then 
+  echo 'De nameservers van '$domain' zijn als volgt:'
+#nameserver= dig ns $domain +short  ## niet meer benodigd
+echo $(nameserver)
+else 
+  echo "Geen Nameservers gevonden voor "$domain
+fi
+
+echo;echo 
+
+
 
 
 
@@ -72,14 +102,26 @@ echo 'Dit is het resultaat uit automate: ' $(automate)
 
 echo; echo  
 
+
+
+
+
 ## IP-range check
 function iprange { exec ./iprangecheck $(system_info) | grep "is in"
 }
-if [[ $(iprange) ]] ;
-then
+
+ 
+if [[ $(iprange) ]] ; 
+then 
      echo "Het gevonden IP-adres valt binnen de volgende range: " 
      echo $(iprange)
 
-else
-    echo "IP-adres waar domeinnaam naar verwijst valt niet binnen de IP-range van Hostnet"
-fi
+else 
+    echo "IP-adres waar de domeinnaam naar verwijst valt niet binnen de IP-range van Hostnet"
+fi 
+
+echo;echo
+
+
+
+
