@@ -113,7 +113,7 @@ function iprange { exec ./iprangecheck $(system_info) | grep "is in"
  
 if [[ $(iprange) ]] ; 
 then 
-     echo "Het gevonden IP-adres valt binnen de volgende range: " 
+     echo "Het gevonden IP-adres valt binnen de volgende Hostnet IP-range: " 
      echo $(iprange)
 
 else 
