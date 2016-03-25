@@ -74,12 +74,12 @@ echo; echo
 
 ## IP-range check
 function iprange { exec ./iprangecheck $(system_info) | grep "is in"
-} 
+}
+if [[ $(iprange) ]] ;
+then
+     echo "Het gevonden IP-adres valt binnen de volgende range: " 
+     echo $(iprange)
 
-echo "Het gevonden IP-adres valt binnen de volgende range: " 
-
-echo $(iprange)
-
-
-
-
+else
+    echo "IP-adres waar domeinnaam naar verwijst valt niet binnen de IP-range van Hostnet"
+fi
