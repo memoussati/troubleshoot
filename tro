@@ -63,7 +63,8 @@ var3=$(ptr)
 
 
 ## Nameservers bepalen
-function nameserver { dig ns $domain +short
+function nameserver { 
+	dig ns $domain +short
 } 
  
 
