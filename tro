@@ -131,7 +131,7 @@ then
      var7="IP-adres valt binnen range van Hostnet"
 else 
     #echo "IP-adres waar de domeinnaam naar verwijst valt niet binnen de IP-range van Hostnet"
-    var7=IP-adres valt niet binnen range van Hostnet
+    var7="IP-adres valt niet binnen range van Hostnet"
 fi 
 
 var11=Automate
