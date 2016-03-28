@@ -89,9 +89,22 @@ fi
 function mailrecord {
 dig mx $domain +short
 } 
+
+if [[ $(mailrecord) ]] 
+then 
+ # 'De nameservers van '$domain' zijn als volgt:'
+   var5="$(mailrecord)"
+
+#echo $(nameserver)
+else 
+  var5="Geen MX-record gevonden voor $domain"
+ 
+
+fi 
+
 #echo 'De volgende mx-record(s) is/zijn gevonden: '
 
-var5=$(mailrecord)
+#var5=$(mailrecord)
 #echo; echo
 
 function automate { 
@@ -121,6 +134,7 @@ else
     var7=IP-adres valt niet binnen range van Hostnet
 fi 
 
+var11=Automate
 
 echo;echo
 var8=Domeinnaam
@@ -129,11 +143,26 @@ printf '%s\t%s\n' \
   Input Output \
   "$var8" "$var1" \
   "IP-adres" "$var2" \
-  "PTR" "$var3)" \
-  "Nameserver" "$var4" \
-  "Mailrecord" "$var5" | 
-  column -t -s $'\t' 
-
+  "PTR" "$var3" \ | 
+#  "$var11" \
+ # $var6 \
+ # "MX-record" \
+# "$var5" \
+#  "Nameserver" \
+ # $var4 | 
+   column -t -s $'\t' 
+echo
+echo MX-record
+echo $var5
+echo 
+echo Automate-check
+echo $var6 
+echo 
+echo Nameservers 
+echo $var4
+echo 
+echo IP-rangecheck
+echo $var7
 
 ######################################################
 
