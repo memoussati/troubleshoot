@@ -116,11 +116,10 @@ var6=$(automate)
 #echo; echo  
 
 
-
-
+my_dir="$(dirname "$0")"
 
 ## IP-range check
-function iprange { exec ./iprangecheck $(system_info) | grep "is in"
+function iprange { exec "$my_dir/iprangecheck" $(system_info) | grep "is in"
 }
 
  
