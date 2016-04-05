@@ -1,155 +1,94 @@
 #!/bin/bash
 
-var1=""
-var2=""
-var3=""
-var4=""
-var5=""
-var6=""
-var7=""
-var8=""
-var9=""
-var10=""
-var11=""
-
 clear                                 
 
 echo -n "          "
 echo -e '\E[37;44m'"\033[1mTroubleshoot\033[0m"
-                                        
-echo; echo
+my_dir="$(dirname "$0")"
 
-
- 
-#if [[ $(system_info) ]]
-#          then
-#          var2="echo $(system_info)"
-#fi
-
-
-
-
-
+echo;echo
 
 # Get domainname
 domain=$1
+
+# Variables
 var1=$domain
-echo -en 'De ingevoerde domeinnaam: '  '\E[47;31m'"\033[1m$domain\033[0m"
+var8=Domeinnaam
+var11=Automate
 
 
-
-
-
-
-
-## IP-adress achterhalen
-
-
-##funtie één ipadress ophalen
+## Get IP-adres
 function system_info {
         dig a $domain +short
 } 
-
-
 var2="$(system_info)"
 
-## PTR-record
+## Get PTR-record of IP-adres
 function ptr {
 dig -x $(system_info) +short 
 }
 var3=$(ptr)
 
-
-
-
-## Nameservers bepalen
+## Get the nameserves of domainname
 function nameserver { 
 	dig ns $domain +short
 } 
  
-
+# If-statement for the nameservers
 if [[ $(nameserver) ]] 
-then 
- # 'De nameservers van '$domain' zijn als volgt:'
-   var4="$(nameserver)"
-
-#echo $(nameserver)
-else 
-  var4="Geen Nameservers gevonden voor $domain"
- 
-
+  then 
+     var4="$(nameserver)"
+  else 
+     var4="Geen Nameservers gevonden voor $domain"
 fi
 
-
-
-
-
-
-
-#mxrecord indien aanwezig
+## Get MX-record of domainname 
 function mailrecord {
 dig mx $domain +short
 } 
 
+# IF-statement for the MX-record
 if [[ $(mailrecord) ]] 
-then 
- # 'De nameservers van '$domain' zijn als volgt:'
+  then 
    var5="$(mailrecord)"
-
-#echo $(nameserver)
-else 
-  var5="Geen MX-record gevonden voor $domain"
- 
-
+  else 
+   var5="Geen MX-record gevonden voor $domain"
 fi 
 
-#echo 'De volgende mx-record(s) is/zijn gevonden: '
-
-#var5=$(mailrecord)
-#echo; echo
-
+## Get automate-result
 function automate { 
+    curl -s 'http://automate.hostnetbv.nl/spam.php' -H 'Origin: http://automate.hostnetbv.nl' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: nl-NL,nl;q=0.8,en-US;q=0.6,en;q=0.4' -H 'Upgrade-Insecure-Requests: 1' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.82 Chrome/48.0.2564.82 Safari/537.36' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Cache-Control: max-age=0' -H 'Referer: http://automate.hostnetbv.nl/spam.php' -H 'Connection: keep-alive' --data 'domainname='$domain'&check=Check+Destination' --compressed | grep "<h3><pre>" | cut -c 10-
+    
+    }
 
-curl -s 'http://automate.hostnetbv.nl/spam.php' -H 'Origin: http://automate.hostnetbv.nl' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: nl-NL,nl;q=0.8,en-US;q=0.6,en;q=0.4' -H 'Upgrade-Insecure-Requests: 1' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/48.0.2564.82 Chrome/48.0.2564.82 Safari/537.36' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Cache-Control: max-age=0' -H 'Referer: http://automate.hostnetbv.nl/spam.php' -H 'Connection: keep-alive' --data 'domainname='$domain'&check=Check+Destination' --compressed | grep "<h3><pre>" | cut -c 10-
-} 
-#echo 'Dit is het resultaat uit automate: ' $(automate) 
+## Store result function automate
 var6=$(automate) 
-#echo; echo  
-
-
-my_dir="$(dirname "$0")"
+  
 
 ## IP-range check
+### Needs to be changed to WHOIS IP-adres | grep netname
 function iprange { exec "$my_dir/iprangecheck" $(system_info) | grep "is in"
 }
 
- 
+## IF-statement for IP-range check 
 if [[ $(iprange) ]] ; 
-then 
-     #echo "Het gevonden IP-adres valt binnen de volgende range: " 
-     #echo $(iprange)
+  then 
      var7="IP-adres valt binnen range van Hostnet"
-else 
-    #echo "IP-adres waar de domeinnaam naar verwijst valt niet binnen de IP-range van Hostnet"
+  else 
     var7="IP-adres valt niet binnen range van Hostnet"
 fi 
 
-var11=Automate
+# The inserted domainname 
+echo -en 'De ingevoerde domeinnaam: '  '\E[47;31m'"\033[1m$domain\033[0m"
 
 echo;echo
-var8=Domeinnaam
 
+## The found output for the functions
 printf '%s\t%s\n' \
   Input Output \
   "$var8" "$var1" \
   "IP-adres" "$var2" \
   "PTR" "$var3" \ | 
-#  "$var11" \
- # $var6 \
- # "MX-record" \
-# "$var5" \
-#  "Nameserver" \
- # $var4 | 
    column -t -s $'\t' 
 echo
 echo MX-record
@@ -163,23 +102,3 @@ echo $var4
 echo 
 echo IP-rangecheck
 echo $var7
-
-######################################################
-
-#printf '%-15s %-10s %-12s %s\n' \
- # case elems messing nlsys \
- # "$var1" "$var2" "$var3 "$var4" \
- # "$var5" "$var6"
-#  "IP-adres" "$(system_info)"
-
-
-#echo;echo 
-
-#printf '%s\t%s\t%s\t%s\n' \
- # case elems messing nlsys \
- # "$var1" "$var2" "$var3" "$var4" \
- # "$var5" "$var6"  |
- # expand -t 15,25,37
-
- ######################################################
-
